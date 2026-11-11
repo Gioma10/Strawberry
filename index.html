@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/dist/styles.css" rel="stylesheet">
+    <!-- Linked here (not imported in main.ts) so styles apply before first paint -->
+    <link rel="stylesheet" href="/src/style.css" />
     <title>strawberry</title>
   </head>
-  <body>
-    <div class="h-dvh w-full flex justify-center items-center bg-pink-200">
-      <div class="text-white text-6xl">Strawberry</div>
-    </div>
+  <body class="h-svh overflow-hidden bg-green-200">
+    <h1
+      class="fixed inset-0 z-0 grid place-items-center select-none whitespace-nowrap text-[min(13vw,40svh)] leading-none font-black tracking-tighter text-white uppercase"
+    >
+      Strawberry
+    </h1>
+    <canvas
+      class="webgl fixed inset-0 z-10 outline-none pointer-events-none opacity-0 transition-opacity duration-700"
+    ></canvas>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
