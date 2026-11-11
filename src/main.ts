@@ -1,4 +1,8 @@
-import { GLTFLoader, RoomEnvironment } from "three/examples/jsm/Addons.js";
+import {
+  DRACOLoader,
+  GLTFLoader,
+  RoomEnvironment,
+} from "three/examples/jsm/Addons.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import * as THREE from "three";
 
@@ -38,11 +42,15 @@ directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
 // Upload Strawberry from public folder
+// Draco decoder (WASM) is served from public/draco to decode Draco-compressed meshes
+const dracoLoader = new DRACOLoader().setDecoderPath("/draco/");
 // Meshopt decoder: lets us load .glb files exported with Meshopt Compression
-const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+const loader = new GLTFLoader()
+  .setDRACOLoader(dracoLoader)
+  .setMeshoptDecoder(MeshoptDecoder);
 
 loader.load(
-  "/strawberry.glb",
+  "/strawberry-draco.glb",
   (gltf) => {
     // The .glb also contains a plane and an Empty: keep only the strawberry
     const strawberry = gltf.scene.getObjectByName("Sphere");
