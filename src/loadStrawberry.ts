@@ -12,7 +12,7 @@ export async function loadStrawberry(onProgress?: (progress: number) => void) {
     if (event.lengthComputable) onProgress?.(event.loaded / event.total);
   });
 
-  const strawberry = gltf.scene.getObjectByName("Sphere");
+  const strawberry = gltf.scene
   if (!strawberry) throw new Error('"Sphere" object not found in .glb');
 
   const box = new THREE.Box3().setFromObject(strawberry);

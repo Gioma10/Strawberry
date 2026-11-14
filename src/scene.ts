@@ -40,5 +40,5 @@ export function createScene(canvas: HTMLCanvasElement) {
     renderer.render(scene, camera);
   });
 
-  return { scene, camera, renderer };
+  return { scene, camera, renderer, controls };
 }
