@@ -9,14 +9,50 @@
     <title>strawberry</title>
   </head>
   <body class="h-svh overflow-hidden bg-green-200">
-    <h1
-      class="fixed inset-0 z-0 grid place-items-center select-none whitespace-nowrap text-[min(13vw,40svh)] leading-none font-black tracking-tighter text-white uppercase"
+    <!-- Loader -->
+    <div
+      id="loader"
+      class="fixed inset-0 z-30 grid place-items-center bg-green-200"
     >
-      Strawberry
-    </h1>
-    <canvas
-      class="webgl fixed inset-0 z-10 outline-none pointer-events-none opacity-0 transition-opacity duration-700"
-    ></canvas>
+      <div class="w-48">
+        <div class="h-1 w-full overflow-hidden rounded-md bg-white">
+          <div id="loader-bar" class="h-full w-0 bg-red-800"></div>
+        </div>
+        <p
+          id="loader-text"
+          class="mt-2 text-center text-sm font-bold text-white"
+        >
+          0%
+        </p>
+      </div>
+    </div>
+
+    <!-- 3D layer: full-screen background, receives the mouse for OrbitControls -->
+    <canvas class="webgl fixed inset-0 z-10 outline-none"></canvas>
+
+    <!-- UI layer: 3 rows, the middle one is exactly centered like the strawberry.
+         41svh = strawberry height on screen (2.5 units, camera at z=4, fov 75).
+         pointer-events-none lets drags reach the canvas; the button turns them back on. -->
+    <main
+      class="pointer-events-none relative z-20 grid h-svh grid-rows-[1fr_41svh_1fr] justify-items-center"
+    >
+      <h1
+        class="self-end pb-2 select-none whitespace-nowrap text-[min(13vw,16svh)] leading-none font-black tracking-tighter text-white uppercase"
+      >
+        Strawberry
+      </h1>
+
+      <!-- Empty slot where the strawberry shows through -->
+      <div aria-hidden="true"></div>
+
+      <button
+        id="enter"
+        class="mt-6 self-start pointer-events-auto cursor-pointer rounded-full bg-white px-10 py-3 text-sm font-black tracking-widest text-red-800 uppercase transition-colors duration-300 hover:bg-red-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+      >
+        Enter
+      </button>
+    </main>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
