@@ -9,6 +9,7 @@ import type * as THREE from "three";
 const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
 const title = document.querySelector("h1") as HTMLElement;
 const button = document.querySelector("#enter") as HTMLButtonElement;
+const home = document.querySelector("#home") as HTMLButtonElement;
 
 const { scene, camera, controls } = createScene(canvas);
 const strawberry = await loadStrawberry(setProgress);
@@ -19,11 +20,19 @@ scene.add(strawberry);
 
 await playIntro(strawberry);
 
-button.addEventListener(
-  "click",
-  () => playEnter(camera, controls, title, button),
-  { once: true },
-);
+// One timeline: Enter plays it forward, Home plays it backward
+const enter = playEnter(camera, controls, title, button);
+
+button.addEventListener("click", () => {
+  // Stop the mouse from moving the camera while GSAP moves it
+  controls.enabled = false;
+  enter.play();
+});
+
+home.addEventListener("click", () => {
+  controls.enabled = false;
+  enter.reverse();
+});
 
 function getPart(name: string) {
   const part = strawberry.getObjectByName(name);

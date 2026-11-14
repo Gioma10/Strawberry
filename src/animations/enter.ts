@@ -11,19 +11,22 @@ export function playEnter(
   title: HTMLElement,
   button: HTMLElement,
 ) {
-  // Stop the mouse from moving the camera while GSAP moves it
-  controls.enabled = false;
-
+  // Built paused: main.ts plays it on Enter and reverses it on Home.
+  // The caller disables controls before playing/reversing; they come back on at either end.
   return gsap
     .timeline({
+      paused: true,
       onComplete: () => {
+        controls.enabled = true;
+      },
+      onReverseComplete: () => {
         controls.enabled = true;
       },
     })
     .to(camera.position, {
       x: 0,
       y: 0,
-      z: 2.5,
+      z: 3,
       duration: 1.4,
       ease: "power3.inOut",
     })
@@ -53,5 +56,6 @@ export function playEnter(
       "#next",
       { x: () => window.innerWidth / 2, duration: 0.9, ease: "power3.out" },
       "<",
-    );
+    )
+    .from("#home", { y: -150, duration: 0.9, ease: "power3.out" }, "<");
 }
