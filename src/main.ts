@@ -2,7 +2,7 @@ import { createScene } from "./scene";
 import { loadStrawberry } from "./loadStrawberry.ts";
 import { hideLoader, setProgress } from "./loadingScreen.ts";
 import { playIntro } from "./animations/intro.ts";
-import { playChange } from "./animations/change.ts";
+import { CAMERA_DURATION, flyTo, playChange } from "./animations/change.ts";
 import { setupSections, type Section } from "./sections.ts";
 import type * as THREE from "three";
 
@@ -49,17 +49,22 @@ scene.add(strawberry);
 
 await playIntro(strawberry, changeButton, descriptionSlot);
 
-// One timeline: Enter plays it forward, Home plays it backward
-const enter = playChange(camera, controls, title);
+// One UI timeline: Change plays it forward, Use plays it backward.
+// The camera flies separately (flyTo), so it always starts from where it is now.
+const enter = playChange(controls, title);
 
 changeButton.addEventListener("click", () => {
   // Stop the mouse from moving the camera while GSAP moves it
   controls.enabled = false;
+  flyTo(camera, controls, 3);
   enter.play();
 });
 
 useButton.addEventListener("click", () => {
   controls.enabled = false;
+  // In reverse the camera moves during the last CAMERA_DURATION seconds, as it did
+  // in the old timeline: first the details leave, then the camera backs off
+  flyTo(camera, controls, 4, Math.max(0, enter.time() - CAMERA_DURATION));
   enter.reverse();
 });
 

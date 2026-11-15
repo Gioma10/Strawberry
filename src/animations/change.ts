@@ -1,16 +1,51 @@
 import gsap from "gsap";
 import { Flip } from "gsap/all";
-import type { PerspectiveCamera } from "three";
+import { Spherical, type PerspectiveCamera } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 gsap.registerPlugin(Flip);
 
-export function playChange(
+export const CAMERA_DURATION = 1.4;
+
+let cameraTween: gsap.core.Tween | undefined;
+
+// Moves the camera around the strawberry (on a sphere), not in a straight line:
+// a straight line from behind would go through the strawberry and flip the view.
+// Built on every click, so it always starts from where the user left the camera.
+export function flyTo(
   camera: PerspectiveCamera,
   controls: OrbitControls,
-  title: HTMLElement,
+  radius: number,
+  delay = 0,
 ) {
-  // Built paused: main.ts plays it on Enter and reverses it on Home.
+  // Flush the damping inertia left by a drag, so OrbitControls doesn't keep
+  // rotating the camera while GSAP moves it (one update without damping zeroes it)
+  controls.enableDamping = false;
+  controls.update();
+  controls.enableDamping = true;
+
+  // Fast clicks: drop the previous flight instead of running two at once
+  cameraTween?.kill();
+
+  // Current position as distance + angles around the center (the controls target)
+  const s = new Spherical().setFromVector3(camera.position);
+
+  cameraTween = gsap.to(s, {
+    radius,
+    phi: Math.PI / 2, // eye level
+    theta: 0, // front; setFromVector3 returns -PI..PI, so this is the shorter way round
+    duration: CAMERA_DURATION,
+    delay,
+    ease: "power3.inOut",
+    onUpdate: () => {
+      camera.position.setFromSpherical(s);
+    },
+  });
+}
+
+// UI only: the camera moves with flyTo, started by main.ts next to play/reverse.
+export function playChange(controls: OrbitControls, title: HTMLElement) {
+  // Built paused: main.ts plays it on Change and reverses it on Use.
   // The caller disables controls before playing/reversing; they come back on at either end.
   return gsap
     .timeline({
@@ -22,22 +57,11 @@ export function playChange(
         controls.enabled = true;
       },
     })
-    .to(camera.position, {
-      x: 0,
-      y: 0,
-      z: 3,
-      duration: 1.4,
+    .to(title, {
+      yPercent: () => -window.innerHeight,
+      duration: 1.2,
       ease: "power3.inOut",
     })
-    .to(
-      title,
-      {
-        yPercent: () => -window.innerHeight,
-        duration: 1.2,
-        ease: "power3.inOut",
-      },
-      "<",
-    )
     .to(
       "#project",
       {
@@ -59,7 +83,8 @@ export function playChange(
       "<",
     )
     // Once the camera has arrived: title drops in from above, arrows slide in from the sides
-    .set("#details", { visibility: "visible" })
+    // Explicit time: the details appear once the camera (flyTo) has arrived
+    .set("#details", { visibility: "visible" }, CAMERA_DURATION)
     .from("#section-title", { yPercent: -100, duration: 0.8, ease: "power3.out" })
     .from(
       "#prev",
