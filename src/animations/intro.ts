@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import type { Object3D } from "three";
 
-export function playIntro(strawberry: Object3D) {
+export function playIntro(strawberry: Object3D, changeButton: HTMLElement, description: HTMLElement) {
   // Target scale computed in loadStrawberry (longest side = 2.5 units)
   const scale = strawberry.scale.x;
 
@@ -20,5 +20,7 @@ export function playIntro(strawberry: Object3D) {
         { y: -Math.PI, duration: 1.5, ease: "power3.out" },
         "<",
       )
+      .from(changeButton, {opacity:0, xPercent: 50})
+      .from(description, {opacity:0, xPercent: -50}, "<")
   );
 }

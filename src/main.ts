@@ -2,37 +2,18 @@ import { createScene } from "./scene";
 import { loadStrawberry } from "./loadStrawberry.ts";
 import { hideLoader, setProgress } from "./loadingScreen.ts";
 import { playIntro } from "./animations/intro.ts";
-import { playEnter } from "./animations/enter.ts";
+import { playChange } from "./animations/change.ts";
 import { setupSections, type Section } from "./sections.ts";
 import type * as THREE from "three";
 
 const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
 const title = document.querySelector("h1") as HTMLElement;
-const button = document.querySelector("#enter") as HTMLButtonElement;
-const home = document.querySelector("#home") as HTMLButtonElement;
+const changeButton = document.querySelector("#change") as HTMLButtonElement;
+const useButton = document.querySelector("#use") as HTMLButtonElement;
+const descriptionSlot = document.querySelector("#description-slot") as HTMLElement;
 
 const { scene, camera, controls } = createScene(canvas);
 const strawberry = await loadStrawberry(setProgress);
-
-// Fade the loader out over an empty scene, so the strawberry doesn't show through
-await hideLoader();
-scene.add(strawberry);
-
-await playIntro(strawberry);
-
-// One timeline: Enter plays it forward, Home plays it backward
-const enter = playEnter(camera, controls, title, button);
-
-button.addEventListener("click", () => {
-  // Stop the mouse from moving the camera while GSAP moves it
-  controls.enabled = false;
-  enter.play();
-});
-
-home.addEventListener("click", () => {
-  controls.enabled = false;
-  enter.reverse();
-});
 
 function getPart(name: string) {
   const part = strawberry.getObjectByName(name);
@@ -50,10 +31,10 @@ const parts = {
 // Which parts each section shows. Record<Section, ...> makes TypeScript
 // complain if a section in sections.ts is missing here.
 const visibleParts: Record<Section, THREE.Object3D[]> = {
-  complete: [parts.seeds, parts.stem, parts.body],
+  strawberry: [parts.seeds, parts.stem, parts.body],
   seeds: [parts.seeds],
   stem: [parts.stem],
-  strawberry: [parts.body],
+  body: [parts.body],
 };
 
 setupSections((section) => {
@@ -61,3 +42,27 @@ setupSections((section) => {
     part.visible = visibleParts[section].includes(part);
   }
 });
+
+// Fade the loader out over an empty scene, so the strawberry doesn't show through
+await hideLoader();
+scene.add(strawberry);
+
+await playIntro(strawberry, changeButton, descriptionSlot);
+
+// One timeline: Enter plays it forward, Home plays it backward
+const enter = playChange(camera, controls, title);
+
+changeButton.addEventListener("click", () => {
+  // Stop the mouse from moving the camera while GSAP moves it
+  controls.enabled = false;
+  enter.play();
+});
+
+useButton.addEventListener("click", () => {
+  controls.enabled = false;
+  enter.reverse();
+});
+
+
+
+

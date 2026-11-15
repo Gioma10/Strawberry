@@ -8,19 +8,21 @@
     <link rel="stylesheet" href="/src/style.css" />
     <title>strawberry</title>
   </head>
-  <body class="h-svh overflow-hidden bg-green-200">
+  <body class="h-svh overflow-hidden bg-cream">
+<span id="project" class="pointer-events-none fixed top-6 left-6 z-20 select-none text-xs font-black tracking-widest text-forest uppercase">#1 Project</span>
+
     <!-- Loader -->
     <div
       id="loader"
-      class="fixed inset-0 z-30 grid place-items-center bg-green-200"
+      class="fixed inset-0 z-30 grid place-items-center bg-cream"
     >
       <div class="w-48">
-        <div class="h-1 w-full overflow-hidden rounded-md bg-white">
-          <div id="loader-bar" class="h-full w-0 bg-red-800"></div>
+        <div class="h-1 w-full overflow-hidden rounded-md bg-sage/30">
+          <div id="loader-bar" class="h-full w-0 bg-forest"></div>
         </div>
         <p
           id="loader-text"
-          class="mt-2 text-center text-sm font-bold text-white"
+          class="mt-2 text-center text-sm font-bold text-forest"
         >
           0%
         </p>
@@ -37,7 +39,7 @@
       class="pointer-events-none relative z-20 grid h-svh grid-rows-[1fr_41svh_1fr] justify-items-center"
     >
       <h1
-        class="self-end pb-2 select-none whitespace-nowrap text-[min(13vw,16svh)] leading-none font-black tracking-tighter text-white uppercase"
+        class="self-end pb-2 select-none whitespace-nowrap text-[min(13vw,16svh)] leading-none font-black tracking-tighter text-forest uppercase"
       >
         Strawberry
       </h1>
@@ -45,97 +47,100 @@
       <!-- Empty slot where the strawberry shows through -->
       <div aria-hidden="true"></div>
 
+      <!-- Description and change button -->
+      <div class="flex flex-col justify-start items-center">
+
+        <!-- overflow-hidden clips the description while it slides, like the title slot -->
+        <div id="description-slot" class="overflow-hidden">
+        <p
+        id="section-description"
+        class="max-w-lg text-center text-sm text-balance text-forest/80 select-none"
+        >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
+      </p>
+        </div>
       <button
-        id="enter"
-        class="mt-6 self-start pointer-events-auto cursor-pointer rounded-full bg-white px-10 py-3 text-sm font-black tracking-widest text-red-800 uppercase transition-colors duration-300 hover:bg-red-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+      id="change"
+      class="mt-6 pointer-events-auto cursor-pointer rounded-full bg-forest px-10 py-3 text-sm font-black tracking-widest text-cream uppercase transition-colors duration-300 hover:bg-sage hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
       >
-        Enter
-      </button>
+      Change
+    </button>
+  </div>
     </main>
 
-    <!-- Details view (after Enter): home centered on top, then the row [prev] TITLE [next].
-         Starts invisible; the enter animation shows it. -->
+    <!-- Details view (after Change): the row [prev] TITLE [next], centered in the free band
+         above the strawberry (23svh, same as the Use band below). Starts invisible;
+         the change animation shows it. pointer-events-none lets drags reach the canvas. -->
     <section
       id="details"
-      class="invisible pointer-events-none fixed inset-x-0 top-0 z-20 flex flex-col items-center gap-3 p-6"
+      class="invisible pointer-events-none fixed inset-x-0 top-0 z-20 flex h-[23svh] items-center justify-center"
     >
-        <button
-          id="home"
-          aria-label="Home"
-          class="pointer-events-auto grid size-12 cursor-pointer place-items-center rounded-full bg-white text-red-800 transition-colors duration-300 hover:bg-red-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-5"
-            aria-hidden="true"
-          >
-            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
-            <path
-              d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-            />
-          </svg>
-        </button>
+    
+    <div class="flex items-center gap-4">
+      <button
+      id="prev"
+      aria-label="Previous"
+      class="pointer-events-auto grid size-12 cursor-pointer place-items-center rounded-full  text-forest transition-colors duration-300 hover:bg-forest hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
+      >
+      <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-6"
+      aria-hidden="true"
+      >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  </button>
+  
+  <!-- Title slot. overflow-hidden clips the title while it slides in/out.
+  The invisible "Strawberry" (longest section name) sits in the same grid cell and
+  fixes the width, so the arrows don't move when the title changes.
+  Update it if you add a longer section name. -->
+  <div
+  class="grid overflow-hidden select-none text-[min(8vw,7svh)] leading-none font-black tracking-tighter text-forest uppercase"
+  >
+  <span aria-hidden="true" class="invisible col-start-1 row-start-1">Strawberry</span>
+  <h2 id="section-title" class="col-start-1 row-start-1 text-center">Complete</h2>
+</div>
 
-        <div class="flex items-center gap-4">
-        <button
-          id="prev"
-          aria-label="Previous"
-          class="pointer-events-auto grid size-12 cursor-pointer place-items-center rounded-full  text-red-800 transition-colors duration-300 hover:bg-red-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-6"
-            aria-hidden="true"
-          >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
+<button
+id="next"
+aria-label="Next"
+class="pointer-events-auto grid size-12 cursor-pointer place-items-center rounded-full text-forest transition-colors duration-300 hover:bg-forest hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
+>
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+stroke-width="2.5"
+stroke-linecap="round"
+stroke-linejoin="round"
+class="size-6"
+aria-hidden="true"
+>
+<path d="m9 18 6-6-6-6" />
+</svg>
+</button>
+</div>
 
-        <!-- Title slot. overflow-hidden clips the title while it slides in/out.
-             The invisible "Strawberry" (longest section name) sits in the same grid cell and
-             fixes the width, so the arrows don't move when the title changes.
-             Update it if you add a longer section name. -->
-        <div
-          class="grid overflow-hidden select-none text-[min(8vw,7svh)] leading-none font-black tracking-tighter text-white uppercase"
-        >
-          <span aria-hidden="true" class="invisible col-start-1 row-start-1">Strawberry</span>
-          <h2 id="section-title" class="col-start-1 row-start-1 text-center">Complete</h2>
-        </div>
+<!-- Use button in the free space below the strawberry.
+     23svh = (100 - 54) / 2: in details the camera is at z=3, so the strawberry is ~54svh tall. -->
+<div class="fixed inset-x-0 bottom-0 flex h-[23svh] items-center justify-center">
+  <button
+    id="use"
+    class="pointer-events-auto cursor-pointer rounded-full bg-forest px-10 py-3 text-sm font-black tracking-widest text-cream uppercase transition-colors duration-300 hover:bg-sage hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
+  >
+    Use
+  </button>
+</div>
+</section>
 
-        <button
-          id="next"
-          aria-label="Next"
-          class="pointer-events-auto grid size-12 cursor-pointer place-items-center rounded-full text-red-800 transition-colors duration-300 hover:bg-red-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-6"
-            aria-hidden="true"
-          >
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </button>
-        </div>
-    </section>
-
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>

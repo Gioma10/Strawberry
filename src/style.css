@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Brand palette (gioma): generates utilities like bg-cream, text-forest, hover:bg-sage */
+@theme {
+  --color-cream: #f2e4c6;
+  --color-forest: #1d4639;
+  --color-sage: #7d9c7a;
+}
